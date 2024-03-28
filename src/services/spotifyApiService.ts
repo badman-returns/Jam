@@ -46,7 +46,7 @@ export class SpotifyAPIService {
     }
 
     public getTokenFromResponse(): Record<string, string> {
-        return window.location.hash
+        const hashParams = window.location.hash
             .substring(1)
             .split("&")
             .reduce<Record<string, string>>((initial, item) => {
@@ -54,6 +54,14 @@ export class SpotifyAPIService {
                 initial[parts[0]] = decodeURIComponent(parts[1]);
                 return initial;
             }, {});
+
+        // Remove the hash from the URL
+        if (typeof window !== 'undefined' && window.history) {
+            // Access the 'history' object and perform operations
+            window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
+          }
+
+        return hashParams;
     }
 
     public setSpotifyAccessToken(token: string) {
